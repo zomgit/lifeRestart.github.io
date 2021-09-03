@@ -42,6 +42,7 @@ class App{
             <div id="cnt" class="head">已重开1次</div>
             <button id="rank">排行榜</button>
             <div id="title">
+                <p style="color: blueviolet;">随心所欲<p>
                 人生重开模拟器<br>
                 <div style="font-size:1.5rem; font-weight:normal;">这垃圾人生一秒也不想呆了</div>
             </div>
@@ -63,7 +64,7 @@ class App{
             <div class="head" style="font-size: 1.6rem">天赋抽卡</div>
             <button id="random" class="mainbtn" style="top: 50%;">10连抽！</button>
             <ul id="talents" class="selectlist"></ul>
-            <button id="next" class="mainbtn" style="top:auto; bottom:0.1em">请选择3个</button>
+            <button id="next" class="mainbtn" style="top:auto; bottom:0.1em">请选择任意天赋</button>
         </div>
         `);
 
@@ -85,10 +86,10 @@ class App{
                                 li.removeClass('selected')
                                 this.#talentSelected.delete(talent);
                             } else {
-                                if(this.#talentSelected.size==3) {
-                                    this.hint('只能选3个天赋');
-                                    return;
-                                }
+                                // if(this.#talentSelected.size==3) {
+                                //     this.hint('只能选3个天赋');
+                                //     return;
+                                // }
 
                                 const exclusive = this.#life.exclusive(
                                     Array.from(this.#talentSelected).map(({id})=>id),
@@ -113,10 +114,10 @@ class App{
         talentPage
             .find('#next')
             .click(()=>{
-                if(this.#talentSelected.size!=3) {
-                    this.hint('请选择3个天赋');
-                    return;
-                }
+                // if(this.#talentSelected.size!=3) {
+                //     this.hint('请选择3个天赋');
+                //     return;
+                // }
                 this.#totalMax = 9999 + this.#life.getTalentAllocationAddition(Array.from(this.#talentSelected).map(({id})=>id));
                 this.switch('property');
             })
@@ -145,13 +146,17 @@ class App{
             propertyPage.find('#total').text(`可用属性点：${this.#totalMax - total()}`);
         }
         const getBtnGroups = (name, min, max)=>{
-            const group = $(`<li>${name}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>`);
+            const group = $(`<li>${name}&nbsp;&nbsp;&nbsp;&nbsp;</li>`);
             const btnSub = $(`<span class="iconfont propbtn">&#xe6a5;</span>`);
+            const btnSub10 = $(`<span class="propbtn2">-10</span>`);
             const inputBox = $(`<input value="0">`);
             const btnAdd = $(`<span class="iconfont propbtn">&#xe6a6;</span>`);
+            const btnAdd10 = $(`<span class="propbtn2">+10</span>`);
+            group.append(btnSub10);
             group.append(btnSub);
             group.append(inputBox);
             group.append(btnAdd);
+            group.append(btnAdd10);
 
             const limit = v=>{
                 v = Number(v)||0;
@@ -172,7 +177,15 @@ class App{
                 }
                 set(get()+1);
             });
+            btnAdd10.click(()=>{
+                if(total() == this.#totalMax) {
+                    this.hint('没用可分配的点数了');
+                    return;
+                }
+                set(get()+10);
+            });
             btnSub.click(()=>set(get()-1));
+            btnSub10.click(()=>set(get()-1));
             inputBox.on('input', ()=>{
                 const t = total();
                 let val = get();
@@ -203,9 +216,9 @@ class App{
             .find('#random')
             .click(()=>{
                 let t = this.#totalMax;
-                const arr = [99, 99, 99, 99];
+                const arr = [999, 999, 999, 999];
                 while(t>0) {
-                    const sub = Math.round(Math.random() * (Math.min(t, 10) - 1)) + 1;
+                    const sub = Math.round(Math.random() * (Math.min(t, 1000) - 1)) + 1;
                     while(true) {
                         const select = Math.floor(Math.random() * 4) % 4;
                         if(arr[select] - sub <0) continue;
@@ -214,10 +227,10 @@ class App{
                         break;
                     }
                 }
-                groups.CHR.set(10 - arr[0]);
-                groups.INT.set(10 - arr[1]);
-                groups.STR.set(10 - arr[2]);
-                groups.MNY.set(10 - arr[3]);
+                groups.CHR.set(1000 - arr[0]);
+                groups.INT.set(1000 - arr[1]);
+                groups.STR.set(1000 - arr[2]);
+                groups.MNY.set(1000 - arr[3]);
             });
 
         propertyPage

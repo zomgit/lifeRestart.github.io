@@ -191,7 +191,7 @@ html {
 
 .propinitial > li > input {
     height: 2.2rem;
-    width: 2.2rem;
+    width: 4.2rem;
     margin: 0 0.5rem;
     padding: 0;
     text-align: center;
@@ -203,6 +203,14 @@ html {
     position: relative;
     cursor: pointer;
     font-size: 2rem;
+}
+
+.propbtn2 {
+  border: 3px solid #f0e2ff;
+  border-radius: 15px;
+  background-color: #747ce8;
+  font-size: 1.8rem;
+  text-align: center;
 }
 
 .lifeTrajectory {
