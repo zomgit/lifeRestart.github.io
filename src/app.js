@@ -42,7 +42,7 @@ class App{
             <div id="cnt" class="head">已重开1次</div>
             <button id="rank">排行榜</button>
             <div id="title">
-                <span style="color: blueviolet;">随心所欲的<span>
+                <span style="color: blueviolet;">随心所欲的</span>
                 <p>人生重开模拟器</p><br>
                 <div style="font-size:1.5rem; font-weight:normal;">这垃圾人生一秒也不想呆了</div>
             </div>
@@ -62,8 +62,8 @@ class App{
         const talentPage = $(`
         <div id="main">
             <div class="head" style="font-size: 1.6rem">天赋抽卡</div>
-            <button id="random" class="mainbtn" style="top: 50%;">10连抽！</button>
-            <button id="random2" class="mainbtn" style="top: 50%;">传奇10连抽！</button>
+            <button id="random" class="mainbtn" style="top: 30%;">10连抽！</button>
+            <button id="random2" class="light-btn" style="top: 60%;">传奇10连抽！</button>
             <ul id="talents" class="selectlist"></ul>
             <button id="next" class="mainbtn" style="top:auto; bottom:0.1em">请选择任意天赋</button>
         </div>
@@ -73,7 +73,7 @@ class App{
             return $(`<li class="grade${grade}b">${name}（${description}）</li>`)
         };
 
-        const initTalent = (talent)=>{
+        const initTalent = (talent,ul)=>{
             const li = createTalent(talent);
             ul.append(li);
             li.click(()=>{
@@ -112,7 +112,7 @@ class App{
                 const ul = talentPage.find('#talents');
                 this.#life.talentRandom()
                     .forEach(talent=>{
-                        initTalent(talent);
+                        initTalent(talent,ul);
                     });
             });
 
@@ -124,7 +124,7 @@ class App{
                 const ul = talentPage.find('#talents');
                 this.#life.talentRandom2()
                     .forEach(talent=>{
-                        initTalent(talent);
+                        initTalent(talent,ul);
                     });
             });
 

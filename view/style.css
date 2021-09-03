@@ -422,6 +422,48 @@ ins.adsbygoogle {
   .eva-hover:hover .eva-icon-hover-flip, .eva-parent-hover:hover .eva-icon-hover-flip {
     animation-name: eva-flipInY; }
 
+
+    
+.light-btn {
+  text-decoration: none;
+  position: absolute;
+  left: 50%;
+  top:50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+  background-size: 400%;
+  width: 400px;
+  height: 100px;
+  line-height:100px;
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 50px;
+  z-index: 1;
+}
+
+.light-btn:hover::before,
+.light-btn:hover {
+  animation: sun 8s infinite;
+}
+
+.light-btn::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  top: -5px;
+  bottom: -5px;
+  background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+  background-size: 400%;
+  border-radius: 50px;
+  filter: blur(10px);
+  z-index: -1;
+}
+
+
+
   @keyframes eva-flipInY {
     from {
       transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
@@ -468,3 +510,9 @@ ins.adsbygoogle {
       transform: scale3d(0.5, 0.5, 0.5); }
     50% {
       opacity: 1; } }
+
+
+  @keyframes sun {
+   100%{
+     background-position: -400% 0;
+  }}
