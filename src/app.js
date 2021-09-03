@@ -9,7 +9,7 @@ class App{
     #life;
     #pages;
     #talentSelected = new Set();
-    #totalMax=999;
+    #totalMax=9999;
     #isEnd = false;
     #selectedExtendTalent = null;
     #hintTimeout;
@@ -42,8 +42,8 @@ class App{
             <div id="cnt" class="head">已重开1次</div>
             <button id="rank">排行榜</button>
             <div id="title">
-                <p style="color: blueviolet;">随心所欲<p>
-                人生重开模拟器<br>
+                <span style="color: blueviolet;">随心所欲的<span>
+                <p>人生重开模拟器</p><br>
                 <div style="font-size:1.5rem; font-weight:normal;">这垃圾人生一秒也不想呆了</div>
             </div>
             <button id="restart" class="mainbtn"><span class="iconfont">&#xe6a7;</span>立即重开</button>
@@ -63,6 +63,7 @@ class App{
         <div id="main">
             <div class="head" style="font-size: 1.6rem">天赋抽卡</div>
             <button id="random" class="mainbtn" style="top: 50%;">10连抽！</button>
+            <button id="random2" class="mainbtn" style="top: 50%;">传奇10连抽！</button>
             <ul id="talents" class="selectlist"></ul>
             <button id="next" class="mainbtn" style="top:auto; bottom:0.1em">请选择任意天赋</button>
         </div>
@@ -72,42 +73,58 @@ class App{
             return $(`<li class="grade${grade}b">${name}（${description}）</li>`)
         };
 
+        const initTalent = (talent)=>{
+            const li = createTalent(talent);
+            ul.append(li);
+            li.click(()=>{
+                if(li.hasClass('selected')) {
+                    li.removeClass('selected')
+                    this.#talentSelected.delete(talent);
+                } else {
+                    if(this.#talentSelected.size!=3) {
+                        this.hint('请选你想要的天赋！');
+                        return;
+                    }
+
+                    const exclusive = this.#life.exclusive(
+                        Array.from(this.#talentSelected).map(({id})=>id),
+                        talent.id
+                    );
+                    if(exclusive != null) {
+                        for(const { name, id } of this.#talentSelected) {
+                            if(id == exclusive) {
+                                this.hint(`与已选择的天赋【${name}】冲突`);
+                                return;
+                            }
+                        }
+                        return;
+                    }
+                    li.addClass('selected');
+                    this.#talentSelected.add(talent);
+                }
+            });
+        }
         talentPage
             .find('#random')
             .click(()=>{
                 talentPage.find('#random').hide();
+                talentPage.find('#random2').hide();
                 const ul = talentPage.find('#talents');
                 this.#life.talentRandom()
                     .forEach(talent=>{
-                        const li = createTalent(talent);
-                        ul.append(li);
-                        li.click(()=>{
-                            if(li.hasClass('selected')) {
-                                li.removeClass('selected')
-                                this.#talentSelected.delete(talent);
-                            } else {
-                                // if(this.#talentSelected.size==3) {
-                                //     this.hint('只能选3个天赋');
-                                //     return;
-                                // }
+                        initTalent(talent);
+                    });
+            });
 
-                                const exclusive = this.#life.exclusive(
-                                    Array.from(this.#talentSelected).map(({id})=>id),
-                                    talent.id
-                                );
-                                if(exclusive != null) {
-                                    for(const { name, id } of this.#talentSelected) {
-                                        if(id == exclusive) {
-                                            this.hint(`与已选择的天赋【${name}】冲突`);
-                                            return;
-                                        }
-                                    }
-                                    return;
-                                }
-                                li.addClass('selected');
-                                this.#talentSelected.add(talent);
-                            }
-                        });
+            talentPage
+            .find('#random2')
+            .click(()=>{
+                talentPage.find('#random').hide();
+                talentPage.find('#random2').hide();
+                const ul = talentPage.find('#talents');
+                this.#life.talentRandom2()
+                    .forEach(talent=>{
+                        initTalent(talent);
                     });
             });
 
@@ -215,10 +232,10 @@ class App{
         propertyPage
             .find('#random')
             .click(()=>{
-                let t = this.#totalMax;
-                const arr = [999, 999, 999, 999];
+                let t = 299;
+                const arr = [99, 99, 99, 99];
                 while(t>0) {
-                    const sub = Math.round(Math.random() * (Math.min(t, 1000) - 1)) + 1;
+                    const sub = Math.round(Math.random() * (Math.min(t, 99) - 1)) + 1;
                     while(true) {
                         const select = Math.floor(Math.random() * 4) % 4;
                         if(arr[select] - sub <0) continue;
@@ -227,10 +244,10 @@ class App{
                         break;
                     }
                 }
-                groups.CHR.set(1000 - arr[0]);
-                groups.INT.set(1000 - arr[1]);
-                groups.STR.set(1000 - arr[2]);
-                groups.MNY.set(1000 - arr[3]);
+                groups.CHR.set(99 - arr[0]);
+                groups.INT.set(99 - arr[1]);
+                groups.STR.set(99 - arr[2]);
+                groups.MNY.set(99 - arr[3]);
             });
 
         propertyPage
@@ -245,7 +262,7 @@ class App{
                     INT: groups.INT.get(),
                     STR: groups.STR.get(),
                     MNY: groups.MNY.get(),
-                    SPR: 500,
+                    SPR: 5,
                     TLT: Array.from(this.#talentSelected).map(({id})=>id),
                 });
                 this.switch('trajectory');
