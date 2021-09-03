@@ -9,7 +9,7 @@ class App{
     #life;
     #pages;
     #talentSelected = new Set();
-    #totalMax=20;
+    #totalMax=999;
     #isEnd = false;
     #selectedExtendTalent = null;
     #hintTimeout;
@@ -188,10 +188,10 @@ class App{
             return {group, get, set};
         }
 
-        groups.CHR = getBtnGroups("颜值", 0, 10); // 颜值 charm CHR
-        groups.INT = getBtnGroups("智力", 0, 10); // 智力 intelligence INT
-        groups.STR = getBtnGroups("体质", 0, 10); // 体质 strength STR
-        groups.MNY = getBtnGroups("家境", 0, 10); // 家境 money MNY
+        groups.CHR = getBtnGroups("颜值", 0, 999); // 颜值 charm CHR
+        groups.INT = getBtnGroups("智力", 0, 999); // 智力 intelligence INT
+        groups.STR = getBtnGroups("体质", 0, 999); // 体质 strength STR
+        groups.MNY = getBtnGroups("家境", 0, 999); // 家境 money MNY
 
         const ul = propertyPage.find('#propertyAllocation');
 
@@ -203,7 +203,7 @@ class App{
             .find('#random')
             .click(()=>{
                 let t = this.#totalMax;
-                const arr = [10, 10, 10, 10];
+                const arr = [99, 99, 99, 99];
                 while(t>0) {
                     const sub = Math.round(Math.random() * (Math.min(t, 10) - 1)) + 1;
                     while(true) {
@@ -223,16 +223,16 @@ class App{
         propertyPage
             .find('#start')
             .click(()=>{
-                if(total()!=this.#totalMax) {
-                    this.hint(`你还有${this.#totalMax-total()}属性点没有分配完`);
-                    return;
-                }
+                // if(total()!=this.#totalMax) {
+                //     this.hint(`你还有${this.#totalMax-total()}属性点没有分配完`);
+                //     return;
+                // }
                 this.#life.restart({
                     CHR: groups.CHR.get(),
                     INT: groups.INT.get(),
                     STR: groups.STR.get(),
                     MNY: groups.MNY.get(),
-                    SPR: 5,
+                    SPR: 500,
                     TLT: Array.from(this.#talentSelected).map(({id})=>id),
                 });
                 this.switch('trajectory');
