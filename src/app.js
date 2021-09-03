@@ -65,7 +65,7 @@ class App{
             <button id="random" class="mainbtn" style="top: 30%;">10连抽！</button>
             <button id="random2" class="light-btn" style="top: 60%;">传奇10连抽！</button>
             <ul id="talents" class="selectlist"></ul>
-            <button id="next" class="mainbtn" style="top:auto; bottom:0.1em">请选择任意天赋</button>
+            <button id="next" class="mainbtn" style="top:auto; bottom:0.1em">天赋选择好了！</button>
         </div>
         `);
 
@@ -74,6 +74,7 @@ class App{
         };
 
         const initTalent = (talent,ul)=>{
+            console.log(talent,ul);
             const li = createTalent(talent);
             ul.append(li);
             li.click(()=>{
@@ -81,8 +82,8 @@ class App{
                     li.removeClass('selected')
                     this.#talentSelected.delete(talent);
                 } else {
-                    if(this.#talentSelected.size!=3) {
-                        this.hint('请选你想要的天赋！');
+                    if(this.#talentSelected.size==7) {
+                        this.hint('最多选7个天赋！');
                         return;
                     }
 
@@ -103,7 +104,8 @@ class App{
                     this.#talentSelected.add(talent);
                 }
             });
-        }
+        };
+
         talentPage
             .find('#random')
             .click(()=>{
@@ -116,7 +118,7 @@ class App{
                     });
             });
 
-            talentPage
+        talentPage
             .find('#random2')
             .click(()=>{
                 talentPage.find('#random').hide();
@@ -202,7 +204,7 @@ class App{
                 set(get()+10);
             });
             btnSub.click(()=>set(get()-1));
-            btnSub10.click(()=>set(get()-1));
+            btnSub10.click(()=>set(get()-10));
             inputBox.on('input', ()=>{
                 const t = total();
                 let val = get();
@@ -273,35 +275,59 @@ class App{
         const trajectoryPage = $(`
         <div id="main">
             <ul id="lifeTrajectory" class="lifeTrajectory"></ul>
+            <button id="pass10Y" class="light-btn" style="top: auto;bottom: 0.5rem;left: 5rem;width: 30%;height: 10%;">速过十年</button>
+            <button id="pass20Y" class="light-btn" style="top: auto;bottom: 0.5rem;right: 5rem;width: 30%;height: 10%;">速过廿年</button>
             <button id="summary" class="mainbtn" style="top:auto; bottom:0.1rem">人生总结</button>
         </div>
         `);
 
+        const trajectory_next = (e)=>{
+            if(this.#isEnd) return;
+            const trajectory = this.#life.next();
+            const { age, content, isEnd } = trajectory;
+        
+            const li = $(`<li><span>${age}岁：</span>${
+                content.map(
+                    ({type, description, grade, name, postEvent}) => {
+                        switch(type) {
+                            case 'TLT':
+                                return `天赋【${name}】发动：${description}`;
+                            case 'EVT':
+                                return description + (postEvent?`<br>${postEvent}`:'');
+                        }
+                    }
+                ).join('<br>')
+            }</li>`);
+            li.appendTo('#lifeTrajectory');
+            $("#lifeTrajectory").scrollTop($("#lifeTrajectory")[0].scrollHeight);
+            if(isEnd) {
+                this.#isEnd = true;
+                trajectoryPage.find('#summary').show();
+                trajectoryPage.find('#pass10Y').hide();
+                trajectoryPage.find('#pass20Y').hide();
+            }
+        }
+        
+        trajectoryPage
+            .find('#pass10Y')
+            .click(()=>{
+                for (let i = 0; i < 10; i++) { 
+                    trajectory_next();
+                }
+            });
+    
+        trajectoryPage
+            .find('#pass20Y')
+            .click(()=>{
+                for (let i = 0; i < 20; i++) { 
+                    trajectory_next();
+                }
+            });
+
         trajectoryPage
             .find('#lifeTrajectory')
             .click(()=>{
-                if(this.#isEnd) return;
-                const trajectory = this.#life.next();
-                const { age, content, isEnd } = trajectory;
-
-                const li = $(`<li><span>${age}岁：</span>${
-                    content.map(
-                        ({type, description, grade, name, postEvent}) => {
-                            switch(type) {
-                                case 'TLT':
-                                    return `天赋【${name}】发动：${description}`;
-                                case 'EVT':
-                                    return description + (postEvent?`<br>${postEvent}`:'');
-                            }
-                        }
-                    ).join('<br>')
-                }</li>`);
-                li.appendTo('#lifeTrajectory');
-                $("#lifeTrajectory").scrollTop($("#lifeTrajectory")[0].scrollHeight);
-                if(isEnd) {
-                    this.#isEnd = true;
-                    trajectoryPage.find('#summary').show();
-                }
+                trajectory_next();
             });
 
         trajectoryPage
@@ -389,6 +415,8 @@ class App{
                 clear: ()=>{
                     trajectoryPage.find('#lifeTrajectory').empty();
                     trajectoryPage.find('#summary').hide();
+                    trajectoryPage.find('#pass10Y').show();
+                    trajectoryPage.find('#pass20Y').show();
                     this.#isEnd = false;
                 },
                 born: ()=>{
@@ -464,7 +492,8 @@ class App{
             }
         }
     }
-
+ 
+   
     switch(page) {
         const p = this.#pages[page];
         if(!p) return;
@@ -491,7 +520,14 @@ class App{
 
     get times() {return JSON.parse(localStorage.times||'0') || 0;}
     set times(v) {localStorage.times = JSON.stringify(parseInt(v) || 0)};
-
+    
 }
+
+const hideBanners = (e) => {
+    document
+        .querySelectorAll(".banner.visible")
+        .forEach((b) => b.classList.remove("visible"));
+};
+
 
 export default App;

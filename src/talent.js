@@ -42,7 +42,7 @@ class Talent {
         return null;
     }
 
-    talentRandom2(include) {
+    talentRandom(include) {
         // 1000, 100, 10, 1
         const talentList = {};
         for(const talentId in this.#talents) {
@@ -75,7 +75,7 @@ class Talent {
     }
 
     
-    talentRandom(include) {
+    talentRandom2(include) {
         // 1000, 100, 10, 1
         const talentList = {};
         for(const talentId in this.#talents) {
